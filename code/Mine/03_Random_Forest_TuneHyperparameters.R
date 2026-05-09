@@ -84,6 +84,7 @@ gage_sample_prevyear <-
   dplyr::mutate(wyearjoin = hydro_year + 1) %>% 
   dplyr::select(-hydro_year)
 
+# adds .previous suffix to the climate predictors
 names(gage_sample_prevyear)[names(gage_sample_prevyear) %in% predictors_climate] <- 
   paste0(names(gage_sample_prevyear)[names(gage_sample_prevyear) %in% predictors_climate], ".previous")
 
