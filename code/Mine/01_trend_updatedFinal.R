@@ -15,6 +15,15 @@ region_df <- readr::read_csv("D:/Peninsular India/Merged_data/Output/Data_to_use
 gauges_annual_summary <- gauges_annual_summary %>%
   mutate(across(where(is.character), ~na_if(., "NA")))
 
+
+
+gauges_annual_summary %>% 
+  anti_join(region_df, by = "gauge_id") %>% 
+  pull(gauge_id) %>% 
+  unique()
+
+
+
 gauge_sample <- 
   gauges_annual_summary %>%
   dplyr::select(gauge_id) %>%

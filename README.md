@@ -16,3 +16,5 @@ R code - IntermittencyTrends git
 Code->Mine
 1. trend_updatedFinal - it will take input the master data and the region file (AI region, also created in Peninsular Rivers repo) and will output master dataset updated with region column, and train-test column, and also a trend file output
 2. RandomForest_Preliminary...file
+
+
