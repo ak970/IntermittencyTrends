@@ -115,18 +115,31 @@ fit_data_in <-
   dplyr::left_join(gage_sample[ , c("gauge_id", "region", predictors_static)], by = "gauge_id")
 
 ## load hyperparameter tuning results
-tune_res_all <- readr::read_csv(file.path("results/Mine", "03_RandomForest_TuneHyperparameters.csv"))
+tune_res_all <- readr::read_csv(file.path("results/Mine2", "03_RandomForest_TuneHyperparameters.csv"))
 
 ## loop through metrics and regions
-# choose number of predictors - based on script 02_RandomForest_FigureOutNumPredictors.R
-npred_final <- tibble::tibble(metric = c("Zero_Flow_Days_sum", "hydro_doy", "mean_dry_down_days"),
-                              npred = c(22, 27, 27)) 
+# # choose number of predictors - based on script 02_RandomForest_FigureOutNumPredictors.R
+# npred_final <- tibble::tibble(metric = c("Zero_Flow_Days_sum", "hydro_doy", "mean_dry_down_days"),
+#                               npred = c(22, 27, 27)) 
+
+# Automatically load the optimal predictors for EVERY region and metric
+npred_final <- readr::read_csv(file.path("results/Mine2", "02_RandomForest_FigureOutNumPredictors.csv"), show_col_types = FALSE) %>% 
+  dplyr::group_by(metric, region) %>% 
+  dplyr::filter(OOBmse == min(OOBmse)) %>%
+  dplyr::select(metric, region, npred = n) %>%
+  dplyr::distinct()
+
+
 for (m in metrics){
   
-  # determine number of predictors
-  n_pred <- npred_final$npred[npred_final$metric == m]
+  # # determine number of predictors
+  # n_pred <- npred_final$npred[npred_final$metric == m]
   
   for (r in regions){
+    
+    # Now it dynamically finds the perfect number for this specific metric AND region
+    n_pred <- npred_final$npred[npred_final$metric == m & npred_final$region == r]
+    
     # get predictor variables
     rf_var_m_r <-
       file.path("results/Mine", paste0("01_RandomForest_PreliminaryVariableImportance_", m, "_", gsub(" ", "", r, fixed = TRUE), ".csv")) %>% 
@@ -262,13 +275,13 @@ for (m in metrics){
 # save data
 fit_data_out %>% 
   dplyr::select(gauge_id, hydro_year, observed, predicted, region_rf, metric) %>% 
-  readr::write_csv(file.path("results/Mine", "04_RandomForest_RunModels_Predictions.csv"))
+  readr::write_csv(file.path("results/Mine2", "04_RandomForest_RunModels_Predictions.csv"))
 
 fit_rf_imp %>% 
-  readr::write_csv(file.path("results/Mine", "04_RandomForest_RunModels_VariableImportance.csv"))
+  readr::write_csv(file.path("results/Mine2", "04_RandomForest_RunModels_VariableImportance.csv"))
 
 fit_pdp_out %>% 
-  readr::write_csv(file.path("results/Mine", "04_RandomForest_RunModels_PartialDependence.csv"))
+  readr::write_csv(file.path("results/Mine2", "04_RandomForest_RunModels_PartialDependence.csv"))
 
 
 ## color palettes

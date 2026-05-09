@@ -115,8 +115,10 @@ rf_tune_grid <- grid_regular(trees(range = c(250, 1650)),
 
 ## loop through metrics and regions
 # # choose number of predictors - based on script 02_RandomForest_FigureOutNumPredictors.R
+## Manually enter the pre-defined number of predictors, based on the result of the previous outputs.
 # npred_final <- tibble::tibble(metric = c("Zero_Flow_Days_sum", "hydro_doy", "mean_dry_down_days"),
-                              # npred = c(22, 27, 27)) 
+#                               npred = c(22, 27, 27))    
+
 
 # Automatically load the optimal predictors for EVERY region and metric
 npred_final <- readr::read_csv(file.path("results/Mine2", "02_RandomForest_FigureOutNumPredictors.csv"), show_col_types = FALSE) %>% 
@@ -124,6 +126,7 @@ npred_final <- readr::read_csv(file.path("results/Mine2", "02_RandomForest_Figur
   dplyr::filter(OOBmse == min(OOBmse)) %>%
   dplyr::select(metric, region, npred = n) %>%
   dplyr::distinct()
+
 
 
 n_folds <- 5 # choose number of folds for cross-val
@@ -137,14 +140,14 @@ for (m in metrics){
   # rename metric column
   names(fit_data_m)[names(fit_data_m) == m] <- "observed"
   
-  # # determine number of predictors
+  # # deterMine2 number of predictors
   # n_pred <- npred_final$npred[npred_final$metric == m]
+  
   
   for (r in regions){
     
     # Now it dynamically finds the perfect number for this specific metric AND region
     n_pred <- npred_final$npred[npred_final$metric == m & npred_final$region == r]
-    
     
     # get predictor variables
     rf_var_m_r <-
