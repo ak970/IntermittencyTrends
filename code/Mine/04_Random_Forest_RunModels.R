@@ -301,25 +301,26 @@ pal_regions <-
 
 
 # plots
-min(subset(fit_data_out, metric == "Zero_Flow_Days_sum")$predicted)
+min(subset(fit_data_out, metric == "mean_dry_down_days")$predicted)
 
-ggplot(subset(fit_data_out, metric == "Zero_Flow_Days_sum" & Sample == "Test"), 
+ggplot(subset(fit_data_out, metric == "mean_dry_down_days" & Sample == "Test"), 
        aes(x = predicted, y = observed, color = region)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = col.gray) +
   scale_color_manual(values = pal_regions) +
   facet_wrap(~region_rf)
 
-ggplot(subset(fit_data_out, metric == "Zero_Flow_Days_sum"), 
+ggplot(subset(fit_data_out, metric == "mean_dry_down_days"), 
        aes(x = predicted, y = observed, color = region)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1, color = col.gray) +
   scale_color_manual(values = pal_regions) +
   facet_wrap(~region_rf)
 
-ggplot(subset(fit_data_out, metric == "Zero_Flow_Days_sum" & Sample == "Test"), 
+ggplot(subset(fit_data_out, metric == "mean_dry_down_days" & Sample == "Test"), 
        aes(x = hydro_year, y = (predicted - observed), color = region)) +
   geom_hline(yintercept = 0, color = col.gray) +
   geom_point() +
   scale_color_manual(values = pal_regions) +
   facet_wrap(~region_rf)
+

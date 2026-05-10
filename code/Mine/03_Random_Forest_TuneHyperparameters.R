@@ -155,13 +155,13 @@ for (m in metrics){
     if (r == "National") {
       fit_data_r <- 
         fit_data_m %>% 
-        dplyr::select(gage_ID, CLASS, currentclimyear, observed, region, all_of(rf_var_m_r$predictor)) %>% 
+        dplyr::select(gauge_id, hydro_year, observed, region, all_of(rf_var_m_r$predictor)) %>% 
         subset(complete.cases(.))
     } else {
       fit_data_r <- 
         fit_data_m %>% 
         subset(region == r) %>% 
-        dplyr::select(gage_ID, CLASS, currentclimyear, observed, region, all_of(rf_var_m_r$predictor)) %>% 
+        dplyr::select(gauge_id, hydro_year, observed, region, all_of(rf_var_m_r$predictor)) %>% 
         subset(complete.cases(.))
     }
     
@@ -172,7 +172,7 @@ for (m in metrics){
     tune_recipe <-
       fit_data_r %>% 
       recipe(observed ~ .) %>%
-      update_role(gage_ID, currentclimyear, region, CLASS, new_role = "ID") %>% 
+      update_role(gauge_id, hydro_year, region, new_role = "ID") %>% 
       step_normalize(all_predictors(), -all_outcomes())
     
     # build tuning workflow
