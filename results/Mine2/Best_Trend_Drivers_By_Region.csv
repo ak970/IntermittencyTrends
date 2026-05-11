@@ -1,0 +1,10 @@
+Region,Metric,Number_1_Driver,Correlation_R
+Humid,Zero_Flow_Days_sum,anf_resid,1
+Humid,mean_dry_down_days,annual_zero_flow_days,0.639
+Humid,hydro_doy,annual_zero_flow_days,-0.656
+Dry_sub_humid,Zero_Flow_Days_sum,anf_resid,1
+Dry_sub_humid,mean_dry_down_days,evap_surface(mm/day),0.75
+Dry_sub_humid,hydro_doy,urban_pct,0.735
+Semi_arid,Zero_Flow_Days_sum,anf_resid,1
+Semi_arid,mean_dry_down_days,annual_zero_flow_days,0.665
+Semi_arid,hydro_doy,annual_zero_flow_days,-0.478

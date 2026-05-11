@@ -1,0 +1,25 @@
+metric,region_rf,region,MAE,Rsq,RMSE,NRMSE,KGE
+No-Flow Days,National,Dry_sub_humid,35.608,0.68,59.752,16.4,0.661
+No-Flow Days,National,Humid,22.564,0.48,41.69,11.5,0.498
+No-Flow Days,National,Semi_arid,48.535,0.61,70.27,19.2,0.618
+No-Flow Days,National,NA,34.863,0.62,57.326,15.7,0.633
+No-Flow Days,Regional,Dry_sub_humid,37.703,0.66,61.09,16.7,0.637
+No-Flow Days,Regional,Humid,22.404,0.46,43.286,11.9,0.5
+No-Flow Days,Regional,Semi_arid,53.997,0.56,74.784,20.4,0.538
+No-Flow Days,Regional,NA,37.328,0.59,60.325,16.5,0.591
+First No-Flow Day,National,Dry_sub_humid,68.389,0.16,99.788,27.7,0.108
+First No-Flow Day,National,Humid,63.08,0.12,94.308,26.2,0.043
+First No-Flow Day,National,Semi_arid,59.836,0.13,88.782,24.7,0.046
+First No-Flow Day,National,NA,62.159,0.13,92.279,25.6,0.066
+First No-Flow Day,Regional,Dry_sub_humid,67.774,0.11,104.115,28.9,0.15
+First No-Flow Day,Regional,Humid,65.055,0.09,96.775,26.9,0.01
+First No-Flow Day,Regional,Semi_arid,63.656,0.06,92.556,25.8,0.03
+First No-Flow Day,Regional,NA,64.724,0.08,95.732,26.6,0.058
+Days from Peak to No-Flow,National,Dry_sub_humid,21.202,0.46,26.768,18.1,0.439
+Days from Peak to No-Flow,National,Humid,20.613,0.23,27.775,15.5,0.264
+Days from Peak to No-Flow,National,Semi_arid,19.895,0.53,25.827,15.7,0.541
+Days from Peak to No-Flow,National,NA,20.317,0.44,26.587,14.8,0.472
+Days from Peak to No-Flow,Regional,Dry_sub_humid,19.694,0.53,25.072,16.9,0.514
+Days from Peak to No-Flow,Regional,Humid,21.015,0.22,28.029,15.6,0.239
+Days from Peak to No-Flow,Regional,Semi_arid,19.508,0.52,25.872,15.8,0.569
+Days from Peak to No-Flow,Regional,NA,20.006,0.44,26.444,14.7,0.493
