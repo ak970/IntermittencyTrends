@@ -17,7 +17,7 @@ data_dir <- "results/Mine"
 
 # 2. LOAD DATA
 # Check if the redundancy file actually exists!
-redundancy_file <- file.path(data_dir, "RedundancyAnalysis_RedundantGages.csv")
+redundancy_file <- file.path("results/Mine2", "RedundancyAnalysis_RedundantGages.csv")
 if(!file.exists(redundancy_file)) {
   stop("ERROR: Could not find 'RedundancyAnalysis_RedundantGages.csv'. Please run RedundancyAnalysis.R first!")
 }
@@ -31,7 +31,7 @@ gage_mean <- readr::read_csv(file.path(data_dir, "Physiographic_data.csv"), show
 gage_regions <- readr::read_csv(file.path(data_dir, "station_ai_regions.csv"), show_col_types = FALSE) %>% 
   mutate(gauge_id = as.character(gauge_id))
 
-gage_trends <- readr::read_csv(file.path("results", "gauge_trends.csv"), show_col_types = FALSE) %>% 
+gage_trends <- readr::read_csv(file.path(data_dir, "gauge_trends.csv"), show_col_types = FALSE) %>% 
   mutate(gauge_id = as.character(gauge_id)) %>%
   subset(metric %in% metrics) %>% 
   dplyr::left_join(gage_mean[,c("gauge_id", "dec_lat_va", "dec_long_va")], by = "gauge_id") %>% 
@@ -44,7 +44,7 @@ pal_regions <- scales::hue_pal()(length(unique_regions))
 names(pal_regions) <- unique_regions
 
 # Load your custom Peninsular Shapefile!
-path_to_shapefile <- "D:/Path/To/Your/Shapefile/Peninsular_Boundary.shp" # <--- UPDATE THIS!
+path_to_shapefile <- "D:/Peninsular India/Catchments/peninsular_catchment_merged.shp" # <--- UPDATE THIS!
 sf_peninsula <- sf::st_read(path_to_shapefile)
 
 p_thres <- 0.05
@@ -71,7 +71,7 @@ p_map <- ggplot() +
   theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5, face = "bold")) +
   labs(title = "Map of Independent vs. Redundant Gauges")
 
-ggsave(file.path("figures_manuscript", "Redundancy_MapOfGages.png"),
+ggsave(file.path("figures_manuscript/Mine2", "Redundancy_MapOfGages.png"),
        plot = p_map, width = 190, height = 150, units = "mm", bg="white")
 
 
@@ -93,7 +93,7 @@ p_bar <- gage_trends %>%
   labs(title = "Trend Significance of the Redundant Gages") +
   theme_bw() + theme(legend.position = "bottom")
 
-ggsave(file.path("figures_manuscript", "Redundancy_BarChart.png"),
+ggsave(file.path("figures_manuscript/Mine2", "Redundancy_BarChart.png"),
        plot = p_bar, width = 190, height = 120, units = "mm")
 
 
@@ -127,7 +127,7 @@ p_compare <- ggplot(gage_trends_region, aes(x = mk_tau_median.all, y = mk_tau_me
        subtitle = "If points fall on the dashed line, the redundant gauges did not bias the regional trend!") +
   theme_bw() + theme(legend.box = "vertical")
 
-ggsave(file.path("figures_manuscript", "Redundancy_CompareMedianTrend.png"),
+ggsave(file.path("figures_manuscript/Mine2", "Redundancy_CompareMedianTrend.png"),
        plot = p_compare, width = 190, height = 150, units = "mm")
 
 print("Redundancy maps and comparisons generated successfully!")

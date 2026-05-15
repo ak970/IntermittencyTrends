@@ -19,6 +19,84 @@ Code->Mine
 
 
 
+ORDER OF EXECUTION AND CATEGORIES
+
+Here is the Official, Sequential Execution Order for the entire repository, divided into logical phases. (I have added checkmarks ✅ next to the ones we have already adapted and completed together!)
+
+
+
+PHASE 1: Data Preparation & Core Trends
+These scripts build the foundational datasets that every other script relies on.
+
+1. 000_CalculateMetrics.R & 00b...
+What it does: Converts daily data to annual metrics.
+Status: ✅ Skipped (You brilliantly built your own Master_Annual_Dataset.csv instead).
+
+2. 00a_SelectGagesForAnalysis.R
+What it does: Runs the Mann-Kendall and Poisson trends, and splits the data into Train/Test subsets.
+Status: ✅ Completed (Output: gauge_trends.csv and gauges_annual_summary_out.csv).
+
+3. RedundancyAnalysis.R
+What it does: Uses shapefiles to find physically nested catchments to prevent double-counting.
+Status: ✅ Completed (Output: RedundancyAnalysis_RedundantGages.csv).
+
+
+
+PHASE 2: "State" Machine Learning
+These scripts determine why rivers went dry in specific years.
+
+1. 01_RandomForest_PreliminaryVariableImportance.R
+What it does: The "Scout". Tests all 100+ variables. ✅ Completed
+
+2. 02_RandomForest_FigureOutNumPredictors.R
+What it does: The "Optimizer". Finds the perfect number of variables to prevent overfitting. ✅ Completed
+
+3. 03_RandomForest_TuneHyperparameters.R
+What it does: The "Tuner". Finds the best tree depth and splits. ✅ Completed
+
+4. 04_RandomForest_RunModels.R
+What it does: Runs the final models and outputs predictions and PDPs. ✅ Completed
+(Once Phase 2 is done, you can run RandomForest_Validation.R and RandomForest_VariableImportance.R anytime!) ✅
+
+
+PHASE 3: "Trend" Machine Learning (Optional, but in the repo)
+These scripts determine why rivers are drying up over a 40-year period.
+(Note: We haven't run these yet! These use the same ML logic as Phase 2, but they predict the mk_tau slopes instead of annual days).
+
+1. RandomForestTrends_01_VariableImportance+NumPredictors.R
+
+2. RandomForestTrends_02_TuneHyperparameters.R
+
+3. RandomForestTrends_03_RunModels.R
+
+PHASE 4: Generating the Figures (Can be run in any order!)
+Once the phases above are done, the scripts in the figures_manuscript/ folder do not depend on each other. You can run them in any order you want.
+
+Trend Figures (Relies on Phase 1)
+- Trends_MannKendall+MannWhitney.R ✅ (Histograms & P-Value Maps)
+- Figure_TrendMap.R ✅ (Sen's Slope Maps)
+- Trends_Violins.R ✅ (River drying by latitude/region)
+- Trends-Climate_Violins.R ✅ (Climate changes by latitude/region)
+- Trends_CompareTrendsToDrivers.R ✅ (Is climate causing the drying?)
+- Redundancy_CompareTrends.R ✅ (Did deleting nested catchments change the results?)
+
+Machine Learning Figures (Relies on Phase 2 & 3)
+- RandomForest_Validation.R ✅ (Scatterplots of R-Squared)
+- RandomForest_VariableImportance.R ✅ (Bar charts & Partial Dependence curves)
+- RandomForestTrends_Validation.R (We haven't done this yet)
+- RandomForestTrends_VariableImportance.R (We haven't done this yet)
+
+
+
+
+
+
+
+
+
+
+
+
 
 =====================================================
 Files and the interpretation of their outputs
@@ -177,10 +255,57 @@ If your points land exactly on the line, it means your results are robust! Keepi
 If your points drift far away from the line, it means your regional trends were heavily biased by a cluster of gauges on the same river acting identically.
 
 
+=====================================================
+
+RandomForestTrends_01_VariableImportance+NumPredictors.R
+
+In Phase 3, we are predicting the Long-Term Trend (Kendall τ).
+Because a river only has one trend over its 40-year history, this script completely collapses your dataset down to just 1 row per gauge. It calculates the 40-year average of your climate (e.g., Mean Precipitation from 1980-2020) and uses it to predict the 40-year slope of the river.
+
+
+What I updated for you:
+Dynamic Lists & Sanitization: Brought in your exact predictors_climate, human, and static lists, and added make.names().
+Stability Fixes: I forced conditional = FALSE and ncores = 1 so this runs quickly and mathematically securely on the smaller dataset without throwing -11 or 400+ importance errors!
+Modern Tidymodels: Updated the deprecated pull_workflow functions.
+Dynamic Elbow Finding: The script automatically finds the optimal number of predictors instead of hardcoding c(27, 23, 16).
+
+
+RandomForestTrends_02_TuneHyperparameters.R
 
 
 
 
+RandomForestTrends_03_RunModels.R
+
+This script takes the best variables (from Script 01) and the best hyperparameters (from Script 02) and builds the final, highly-optimized model to predict the 40-year drying trends of your rivers.
+What I upgraded for you:
+Dynamic Variables: Just like before, I removed the hardcoded c(27, 23, 16) and replaced it with a dynamic CSV reader that grabs the exact optimal numbers from your Script 01 output.
+Fixed an Original Author Bug: The original authors made a typo in this script! In the previous script, they saved the tuning results under the name tau_annualnoflowdays. But in this script, they try to search for the tuning results using just annualnoflowdays (without the tau_). I fixed this mismatch so it correctly finds your tuned hyperparameters!
+Modern Tidymodels: Updated the deprecated pull_workflow_fit() functions to modern extract_fit_engine().
+File Paths & Column Names: Swapped gage_ID to gauge_id and routed everything to results/Mine.
 
 
+=====================================================
+RandomForestTrends_Validation.R
+
+This script validates your Trend machine learning models. Instead of predicting the number of dry days, it tests how accurately the model was able to guess the long-term Kendall 
+τ
+τ
+ slope of each river.
+What I fixed/upgraded for you:
+The Missing R2 Function: Just like in the previous validation script, the original authors didn't include the R2 function formula. I injected it back in so the script doesn't crash when trying to calculate the R-Squared.
+Fixed a Facet Labeller Bug: In the original code you pasted, the authors made a typo in their facet_grid labeller. The metric in the dataframe is named "tau_annualnoflowdays", but they tried to label "annualnoflowdays". This would cause their graph labels to fail and just print the raw variable names! I fixed this and updated it to your specific metrics (tau_Zero_Flow_Days_sum, etc.).
+ggsave Syntax: Moved ggsave to its own line so ggplot2 doesn't throw an error.
+Added Dynamic Colors: Automatically generates the region colors.
+
+
+
+RandomForestTrends_VariableImportance.R
+
+
+It creates the exact same style of Bar Charts we made earlier, but instead of showing what drives the annual zero-flow days, it shows what drives the 40-year drying trends (e.g., "Rivers are drying up primarily because the long-term average Precipitation is low").
+What I upgraded for you:
+Dynamic df_pred Table: Just like in the previous Variable Importance script, the authors hid the df_pred table in their helper files. I recreated it here using your exact sanitized predictor lists so the colors map perfectly to Climate, Land Use, and Physiography.
+Removed Hardcoded Axis Limits: The original authors hardcoded their X-axis to stop at 9% (breaks = c(0, 0.03, 0.06, 0.09)). If your variables have a 25% importance, their code would literally crop the bars out of the graph! I removed this so the axes automatically scale to your true data.
+Fixed Factor Ordering: The original code had a bug where the bars wouldn't sort strictly from highest to lowest. I fixed this using rev(long_name).
 
