@@ -121,7 +121,9 @@ for (m in metrics){
     num.threads = ncores
   )
   
-  for (v in 1:n_pred){
+  # for (v in 1:n_pred){
+  # Dynamically caps the loop so it doesn't look for NA variables!
+  for (v in 1:nrow(rf_var_m_r)){
     var <- rf_var_m_r$predictor[v]
     
     df_pdp_var <- pdp::partial(

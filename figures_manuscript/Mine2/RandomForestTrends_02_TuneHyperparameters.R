@@ -68,7 +68,7 @@ for (m in metrics){
     trees(range = c(250, 1650)),
     mtry(range = c(1, max_mtry)),
     min_n(range = c(3, 25)),
-    levels = 5 # <--- Reduced from 8 to 5 to save massive processing time!
+    levels = 8 # <--- Reduced from 8 to 5 to save massive processing time!
   )
   
   # Extract top predictor variables

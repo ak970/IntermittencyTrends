@@ -117,7 +117,7 @@ final_plot <- (p_nat_anf + p_nat_p2z + p_nat_zff) +
   theme(legend.position = "bottom")
 
 # Save to figures_manuscript
-ggsave(file.path("figures_manuscript", "RandomForestTrends_VariableImportance.png"),
+ggsave(file.path("figures_manuscript", "RandomForestTrends_VariableImportance.png"),plot = 
        plot = final_plot, width = 220, height = 110, units = "mm", bg = "white")
 
 print("Trend Variable Importance plots generated successfully! Check figures_manuscript/RandomForestTrends_VariableImportance.png")
